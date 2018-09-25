@@ -13,22 +13,29 @@ services:
     volumes:
       - ${APP_PATH_HOST}:/var/www
     environment:
-      - DB_PORT=3306
-      - DB_HOST=mysql
       - REDIS_PORT=6379
       - REDIS_HOST=redis
+      - DB_CONNECTION=pgsql
+      ## mysql
+#      - DB_PORT=3306
+#      - DB_HOST=mysql
+      ## pgsql
+      - DB_PORT=5432
+      - DB_HOST=pgsql
   php-cli:
     build: ${CONTAINERS_PATH}/php-cli
     volumes:
       - ${APP_PATH_HOST}:/var/www
     environment:
-      - DB_PORT=3306
-      - DB_HOST=mysql
-      ## pgsql
-#      - DB_PORT=5432
-#      - DB_HOST=pgsql
       - REDIS_PORT=6379
       - REDIS_HOST=redis
+      - DB_CONNECTION=pgsql
+      ## mysql
+#      - DB_PORT=3306
+#      - DB_HOST=mysql
+      ## pgsql
+      - DB_PORT=5432
+      - DB_HOST=pgsql
     tty: true
   mysql:
     image: mysql:5.7
@@ -41,16 +48,16 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     ports:
       - 33061:3306
-#  pgsql:
-#    image: postgres:latest
-#    environment:
-#      - POSTGRES_USER=${DB_USER}
-#      - POSTGRES_PASSWORD=${DB_PASSWORD}
-#      - POSTGRES_DATABASE=${DB_NAME}
-#    ports:
-#      - 54321:5432
-#    volumes:
-#      - ./storage/docker/postgres/:/docker-entrypoint-initdb.d/
+  pgsql:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DATABASE=${DB_NAME}
+    ports:
+      - 54321:5432
+    volumes:
+      - ./storage/docker/postgres/:/docker-entrypoint-initdb.d/
   redis:
     image: redis:3.0
     ports:
