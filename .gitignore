@@ -1,0 +1,9 @@
+/app/storage/docker
+/storage
+.idea
+.env
+
+
+*.bak
+/**/.bak
+

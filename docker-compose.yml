@@ -1,0 +1,85 @@
+version: '3.7'
+services:
+  nginx:
+    build:
+      context: ./
+      dockerfile: docker/containers/nginx/Dockerfile
+    volumes:
+      - ${APP_PATH_HOST}:/var/www
+    ports:
+      - 8082:80
+  php-fpm:
+    build: ${CONTAINERS_PATH}/php-fpm
+    volumes:
+      - ${APP_PATH_HOST}:/var/www
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=mysql
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
+  php-cli:
+    build: ${CONTAINERS_PATH}/php-cli
+    volumes:
+      - ${APP_PATH_HOST}:/var/www
+    environment:
+      - DB_PORT=3306
+      - DB_HOST=mysql
+      ## pgsql
+#      - DB_PORT=5432
+#      - DB_HOST=pgsql
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
+    tty: true
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./storage/docker/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 33061:3306
+#  pgsql:
+#    image: postgres:latest
+#    environment:
+#      - POSTGRES_USER=${DB_USER}
+#      - POSTGRES_PASSWORD=${DB_PASSWORD}
+#      - POSTGRES_DATABASE=${DB_NAME}
+#    ports:
+#      - 54321:5432
+#    volumes:
+#      - ./storage/docker/postgres/:/docker-entrypoint-initdb.d/
+  redis:
+    image: redis:3.0
+    ports:
+      - 63791:6379
+  node:
+    image: node:8.6-alpine
+    volumes:
+        - ${APP_PATH_HOST}:/var/www
+    working_dir: /var/www
+    tty: true
+
+# .env set:
+# _APP_PATH_HOST=app
+# check dka enviroments
+
+# ide environments
+# add php interpretator
+  # Server New
+    # Unix Socket
+      # php-cli
+  # path mappings
+    # <Project root>/app→/var/www
+# add test interpretator
+  # Edit Configuration phpunit
+    # defined in configuration file
+      # phpunit.xml
+  # Settings -> Test Frameworks
+    # path to phpunit.phar
+      # /home/andrey/Public/www/docker/blog-v3-ex-2/app/vendor/phpunit/phpunit/phpunit
+    # add from remote interpreter
+      # add php interpreter Docker PHP
+      # use composer autoload
