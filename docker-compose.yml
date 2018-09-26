@@ -8,11 +8,12 @@ services:
       - ${APP_PATH_HOST}:/var/www
     ports:
       - 8082:80
+      - 4432:443
   php-fpm:
     build: ${CONTAINERS_PATH}/php-fpm
     volumes:
       - ${APP_PATH_HOST}:/var/www
-      - ${DATA_PATH_HOST}/php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
+      - ${DATA_PATH_HOST}/php-fpm/php${PHP_VERSION}-fpm.ini:/usr/local/etc/php/php.ini
     environment:
       - REDIS_PORT=6379
       - REDIS_HOST=redis
@@ -27,7 +28,7 @@ services:
     build: ${CONTAINERS_PATH}/php-cli
     volumes:
       - ${APP_PATH_HOST}:/var/www
-      - ${DATA_PATH_HOST}/php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
+      - ${DATA_PATH_HOST}/php-fpm/php${PHP_VERSION}-cli.ini:/usr/local/etc/php/php.ini
     environment:
       - REDIS_PORT=6379
       - REDIS_HOST=redis
@@ -62,15 +63,26 @@ services:
     volumes:
       - ${STORAGE_PATH}/postgres:/var/lib/postgresql/data
       - ${POSTGRES_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
-#      - ./storage/docker/postgres/:/var/lib/pgsql/9.5/data
-#      - ./storage/docker/postgres/:/var/lib/pgsql/9.5
-  redis:
-    image: redis:3.0
-    ports:
-      - 63791:6379
-  node:
-    image: node:8.6-alpine
+      # - ./storage/docker/postgres/:/var/lib/pgsql/9.5/data
+      # - ./storage/docker/postgres/:/var/lib/pgsql/9.5
+#  redis:
+#    image: redis:3.0
+#    ports:
+#      - 63791:6379
+#  node:
+#    image: node:8.6-alpine
+#    volumes:
+#        - ${APP_PATH_HOST}:/var/www
+#    working_dir: /var/www
+#    tty: true
+  composer:
+    image: composer:latest
     volumes:
-        - ${APP_PATH_HOST}:/var/www
-    working_dir: /var/www
-    tty: true
+      - ./app:/app
+    command: 'true'
+# composer:
+#   restart: 'no'
+#   image: composer/composer:php7
+#   command: install
+#   volumes:
+#     - ./app:/app

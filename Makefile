@@ -1,5 +1,14 @@
 _APP_PATH_HOST=app
 
+cmd:
+	docker exec app_php-cli_1 $(cmd)
+
+art:
+	docker exec app_php-cli_1 php artisan $(cmd)
+
+speak:
+	echo $(PHRASE)
+
 docker-up: memory
 	docker-compose up -d
 
@@ -45,3 +54,7 @@ memory:
 perm:
 	sudo chgrp -R www-data storage $(_APP_PATH_HOST)/bootstrap/cache
 	sudo chmod -R ug+rwx storage $(_APP_PATH_HOST)/bootstrap/cache
+	sudo chgrp -R www-data $(_APP_PATH_HOST)/storage/logs
+	sudo chmod -R ug+rwx $(_APP_PATH_HOST)/storage/logs
+	sudo chmod -R 777 $(_APP_PATH_HOST)/storage/logs
+
