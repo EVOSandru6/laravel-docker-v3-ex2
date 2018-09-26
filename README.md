@@ -132,3 +132,11 @@
 
 ## logs
 * sudo docker logs {container ID}
+
+## examples for build
+* https://github.com/dmstr/docker-php-yii2
+* https://github.com/Laradock/laradock
+
+WORKDIR /var/www
+
+

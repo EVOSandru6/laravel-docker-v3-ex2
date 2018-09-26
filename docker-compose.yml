@@ -12,6 +12,7 @@ services:
     build: ${CONTAINERS_PATH}/php-fpm
     volumes:
       - ${APP_PATH_HOST}:/var/www
+      - ${DATA_PATH_HOST}/php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
     environment:
       - REDIS_PORT=6379
       - REDIS_HOST=redis
@@ -26,6 +27,7 @@ services:
     build: ${CONTAINERS_PATH}/php-cli
     volumes:
       - ${APP_PATH_HOST}:/var/www
+      - ${DATA_PATH_HOST}/php-fpm/php${PHP_VERSION}.ini:/usr/local/etc/php/php.ini
     environment:
       - REDIS_PORT=6379
       - REDIS_HOST=redis
@@ -40,7 +42,7 @@ services:
   mysql:
     image: mysql:5.7
     volumes:
-      - ./storage/docker/mysql:/var/lib/mysql
+      - ${STORAGE_PATH}/mysql:/var/lib/mysql
     environment:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
@@ -49,7 +51,8 @@ services:
     ports:
       - 33061:3306
   pgsql:
-    image: postgres:latest
+    image: postgres:9.6
+    # image: postgres:latest
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -57,7 +60,10 @@ services:
     ports:
       - 54321:5432
     volumes:
-      - ./storage/docker/postgres/:/docker-entrypoint-initdb.d/
+      - ${STORAGE_PATH}/postgres:/var/lib/postgresql/data
+      - ${POSTGRES_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
+#      - ./storage/docker/postgres/:/var/lib/pgsql/9.5/data
+#      - ./storage/docker/postgres/:/var/lib/pgsql/9.5
   redis:
     image: redis:3.0
     ports:
